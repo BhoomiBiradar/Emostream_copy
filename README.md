@@ -1,7 +1,7 @@
 # EmoStream: Concurrent Emoji Broadcast over Event-Driven Architecture
 
 ## Project Overview
-Emojis reflect the dynamic sentiments of fans in real-time. When Virat is batting, everyone’s hoping for boundaries with every ball; when he’s on the field, they’re cheering for wickets. Capturing these user-generated signals as they flow in, distilling them into an emoji swarm that mirrors the crowd’s mood, and displaying these shifting emotions live is a major challenge—especially with billions of emoji reactions anticipated over the tournament.
+Emojis reflect the dynamic sentiments of fans in real-time. Capturing these user-generated signals as they flow in, distilling them into an emoji swarm that mirrors the crowd’s mood, and displaying these shifting emotions live is a major challenge—especially with billions of emoji reactions anticipated over the tournament.
 
 ---
 
@@ -22,7 +22,6 @@ Emojis reflect the dynamic sentiments of fans in real-time. When Virat is battin
 
 ### 3. Broadcasting to Clients
 - **Main Publisher**: Entry point for publishing processed emoji data.
-- **Message Broker**: Kafka / RabbitMQ ensures reliable delivery.
 - **Cluster Publishers**: Receive data from main publisher and distribute to subscribers.
 - **Subscribers**: Deliver real-time emoji updates directly to clients.
 
@@ -30,21 +29,19 @@ Emojis reflect the dynamic sentiments of fans in real-time. When Virat is battin
 
 ---
 
-## Features
-- Handles **billions of concurrent emoji events**.  
-- Ultra-low latency **(< 2s end-to-end)**.  
-- Fault-tolerant and horizontally scalable.  
-- UI-friendly aggregation algorithm (emoji swarms).  
-- Real-time broadcasting with Pub-Sub delivery.  
+## Tech Stack
+- **Backend API**: Flask 
+- **Streaming**: Apache Kafka  
+- **Processing**: Apache Spark Streaming  
+- **Messaging**: Kafka
 
 ---
 
-## Tech Stack
-- **Backend API**: Flask / Express.js  
-- **Streaming**: Apache Kafka  
-- **Processing**: Apache Spark Streaming  
-- **Messaging**: Kafka / RabbitMQ (Pub-Sub)  
-- **Deployment**: Docker, Kubernetes (optional for scaling)  
+## Features
+- Handles **1000's of concurrent emoji events**.  
+- Ultra-low latency **(< 2s end-to-end)**.  
+- Fault-tolerant and horizontally scalable.    
+- Real-time broadcasting with Pub-Sub delivery.  
 
 ---
 
