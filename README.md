@@ -1,50 +1,104 @@
-# EmoStream 
-**Real-time Emoji Broadcast for Live Events**
+# EmoStream: Concurrent Emoji Broadcast over Event-Driven Architecture
 
-EmoStream is a high-concurrency, event-driven system that captures, processes, and broadcasts **billions of emoji reactions** in real time during live sporting events.
-
----
-
-## Overview
-- Collects emoji reactions from millions of users.
-- Processes them using **Apache Kafka** + **Apache Spark Streaming** (2s micro-batches).
-- Aggregates duplicates (1000+ identical emojis → 1 in swarm).
-- Broadcasts to all clients via a **Pub-Sub delivery system** with low latency.
+## Project Overview
+Emojis reflect the dynamic sentiments of fans in real-time. When Virat is batting, everyone’s hoping for boundaries with every ball; when he’s on the field, they’re cheering for wickets. Capturing these user-generated signals as they flow in, distilling them into an emoji swarm that mirrors the crowd’s mood, and displaying these shifting emotions live is a major challenge—especially with billions of emoji reactions anticipated over the tournament.
 
 ---
 
-## Architecture
+## Application Architecture
 
-### Data Ingestion
-Clients → API (Flask/Express) → Kafka Producer (0.5s flush).
-![Stage 1](Application%20Architecture.png)
+![Application Architecture](images/Application_Architecture.png)
 
----
+### 1. Handling Client Requests (Data Ingestion)
+- **API Endpoint (Flask/Express.js)**: Users send emoji data via POST requests (User ID, Emoji type, Timestamp).
+- **Kafka Producer**: Buffers and flushes emoji data to Kafka every 500ms.
 
-### Real-Time Processing
-Spark Streaming → Aggregates emoji counts → Pushes results back to Kafka.
-![Spark Streaming](spark%20streaming.png)
+### 2. Real-Time Processing
+- **Apache Spark Streaming**: Consumes emoji data stream from Kafka.
+- **Micro-batching (2s interval)**: Aggregates emoji counts in near real-time.
+- **Aggregation Algorithm**: 1000+ identical emojis → compressed into a single swarm.
+ 
+![Spark Streaming](images/spark_streaming.png)
 
----
+### 3. Broadcasting to Clients
+- **Main Publisher**: Entry point for publishing processed emoji data.
+- **Message Broker**: Kafka / RabbitMQ ensures reliable delivery.
+- **Cluster Publishers**: Receive data from main publisher and distribute to subscribers.
+- **Subscribers**: Deliver real-time emoji updates directly to clients.
 
-### Broadcasting
-Main Publisher → Cluster Publishers → Subscribers → Clients.
-![Pub-Sub](pub%20sub%20model.png)
-
----
-
-## Tech Stack
-- **Backend API:** Flask / Express.js
-- **Streaming:** Apache Kafka
-- **Processing:** Apache Spark Streaming
-- **Messaging:** Kafka / RabbitMQ (Pub-Sub)
+![Pub Sub Model](images/pub_sub_model.png)  
 
 ---
 
 ## Features
-- Handles **billions of concurrent emoji events**.
-- Ultra-low latency (< 2s end-to-end).
-- Auto-scaling, fault-tolerant architecture.
-- UI-friendly aggregation algorithm.
+- Handles **billions of concurrent emoji events**.  
+- Ultra-low latency **(< 2s end-to-end)**.  
+- Fault-tolerant and horizontally scalable.  
+- UI-friendly aggregation algorithm (emoji swarms).  
+- Real-time broadcasting with Pub-Sub delivery.  
+
+---
+
+## Tech Stack
+- **Backend API**: Flask / Express.js  
+- **Streaming**: Apache Kafka  
+- **Processing**: Apache Spark Streaming  
+- **Messaging**: Kafka / RabbitMQ (Pub-Sub)  
+- **Deployment**: Docker, Kubernetes (optional for scaling)  
+
+---
+
+## Getting Started
+
+### 1. Prerequisites
+- Python 3.8+  
+- Apache Kafka  
+- Apache Spark  
+- Docker (optional)  
+
+### 2. Clone Repository
+```bash
+git clone https://github.com/your-username/emostream.git
+cd emostream
+```
+
+### 3. Start Zookeeper & Kafka
+```bash
+# Start Zookeeper
+bin/zookeeper-server-start.sh config/zookeeper.properties
+
+# Start Kafka Broker
+bin/kafka-server-start.sh config/server.properties
+```
+
+### 4. Run API (Flask Example)
+```bash
+python app.py
+```
+
+### 5. Run Spark Streaming Job
+```bash
+spark-submit spark_streaming.py
+```
+
+### 6. Run Main Publisher
+```bash
+python main_pub.py
+```
+
+### 7. Run Cluster Publisher & Subscribers
+```bash
+python cluster_pub.py
+python cluster_sub.py
+```
+
+---
+
+## Demo (Screenshots)
+- API Producer: ![API Producer](images/app.png)  
+- Spark Streaming: ![Spark Streaming](images/spark_streaming_terminal.png)  
+- Main Publisher: ![Main Pub](images/main_pub_terminal.png)  
+- Cluster Publisher: ![Cluster Pub](images/cluster_pub_terminal.png)  
+- Cluster Subscriber: ![Cluster Sub](images/cluster_sub_terminal.png)  
 
 ---
